@@ -66,7 +66,7 @@ Uzupełnij schemat (`db_schema.png`).
 
 ---
 
-## 2. Czym jest `JpaRepository`?
+## 2. Czym jest `JpaRepo  sitory`?
 
 `JpaRepository` to interfejs z biblioteki Spring Data. Wystarczy stworzyć
 **własny interfejs**, który po nim dziedziczy, a Spring sam w tle dostarczy
