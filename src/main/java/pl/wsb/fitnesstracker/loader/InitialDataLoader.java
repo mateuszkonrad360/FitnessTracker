@@ -9,6 +9,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import pl.wsb.fitnesstracker.statistics.api.Statistics;
+import pl.wsb.fitnesstracker.statistics.internal.StatisticsRepository;
 import pl.wsb.fitnesstracker.training.api.Training;
 import pl.wsb.fitnesstracker.training.internal.ActivityType;
 import pl.wsb.fitnesstracker.user.api.User;
@@ -33,8 +35,8 @@ import static java.util.Objects.isNull;
 class InitialDataLoader {
 
     private final JpaRepository<User, Long> userRepository;
-
     private final JpaRepository<Training, Long> trainingRepository;
+    private final StatisticsRepository statisticsRepository; // <--- DODANE REPOZYTORIUM STATYSTYK
 
     @EventListener
     @Transactional
@@ -46,7 +48,7 @@ class InitialDataLoader {
 
         List<User> sampleUserList = generateSampleUsers();
         List<Training> sampleTrainingList = generateTrainingData(sampleUserList);
-
+        generateStatisticsData(sampleUserList); // <--- ODPALENIE GENERATORA STATYSTYK
 
         log.info("Finished loading initial data");
     }
@@ -74,6 +76,24 @@ class InitialDataLoader {
         users.add(generateUser("Oliver", "Swift", 29));
 
         return users;
+    }
+
+    // <--- NOWA METODA GENERUJĄCA STATYSTYKI DLA UŻYTKOWNIKÓW
+    private void generateStatisticsData(List<User> users) {
+        List<Statistics> statisticsList = new ArrayList<>();
+        int baseTrainings = 5;
+        double baseDistance = 20.5;
+        int baseCalories = 1500;
+
+        for (User user : users) {
+            statisticsList.add(new Statistics(
+                    user,
+                    baseTrainings++,
+                    baseDistance + 12.3,
+                    baseCalories + 450
+            ));
+        }
+        statisticsRepository.saveAll(statisticsList);
     }
 
     private List<Training> generateTrainingData(List<User> users) {
@@ -167,5 +187,4 @@ class InitialDataLoader {
             throw new IllegalStateException("Initial data loader was not autowired correctly " + this);
         }
     }
-
 }

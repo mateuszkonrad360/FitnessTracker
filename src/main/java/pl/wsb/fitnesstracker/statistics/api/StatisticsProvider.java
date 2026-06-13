@@ -1,5 +1,6 @@
 package pl.wsb.fitnesstracker.statistics.api;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface StatisticsProvider {
@@ -11,6 +12,8 @@ public interface StatisticsProvider {
      * @param statisticsId id of the statistics to be searched
      * @return An {@link Optional} containing the located Statistics, or {@link Optional#empty()} if not found
      */
+    List<StatisticShortInfoDTO> findAllShortInfo();
+    StatisticDetailsDTO findDetailsByCriteria(Long id, String firstName, String lastName, String email);
     Optional<Statistics> getStatistics(Long statisticsId);
 
 }
